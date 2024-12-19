@@ -2,10 +2,8 @@ package com.example.cashregisterapp;
 
 import android.app.Application;
 
-import java.util.ArrayList;
-
 public class MyApp extends Application {
-    ProductServiceClass myservice = new ProductServiceClass();
+    ServiceClass myservice = new ServiceClass();
     @Override
     public void onCreate() {
         super.onCreate();

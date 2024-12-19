@@ -2,23 +2,19 @@ package com.example.cashregisterapp;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
-    MyAdapter adapter;
+    ProductListAdapter adapter;
     ListView productList;
     Button buyButton;
     TextView productTypeTextView;
@@ -26,9 +22,10 @@ public class MainActivity extends AppCompatActivity {
     TextView quantityTextview;
     String quantity = "";
     Integer selectedPosition;
+    Button managerButton;
     Double total = 0.0;
     ProductModel selectedProduct;
-    ProductServiceClass serviceClass;
+    ServiceClass serviceClass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +38,11 @@ public class MainActivity extends AppCompatActivity {
         productTypeTextView = findViewById(R.id.productType);
         totalTextView = findViewById(R.id.total);
         buyButton = findViewById(R.id.buy);
+        managerButton = findViewById(R.id.managerButton);
         findViewById(R.id.buttonClear).setOnClickListener(v -> {
             reset();
         });
-        adapter = new MyAdapter(serviceClass.productList, this);
+        adapter = new ProductListAdapter(serviceClass.productList, this);
         productList.setAdapter(adapter);
         int[] numberIds = {R.id.button0, R.id.button1, R.id.button2, R.id.button3,
                 R.id.button4, R.id.button5, R.id.button6, R.id.button7,
@@ -53,16 +51,23 @@ public class MainActivity extends AppCompatActivity {
         for (int id : numberIds) {
             findViewById(id).setOnClickListener(this::numberClicked);
         }
+
         productList.setOnItemClickListener((parentView, view, position, id) -> {
+            adapter.setSelectedPosition(position);
             selectedProduct = serviceClass.productList.get(position);
             selectedPosition = position;
             productTypeTextView.setText(selectedProduct.productName);
             reset();
         });
+        managerButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ManagerPortal.class);
+            startActivity(intent);
+
+        });
         buyButton.setOnClickListener(v -> {
           if(selectedProduct == null || quantity.isEmpty())
               Toast.makeText(MainActivity.this, "All fields are Required!", Toast.LENGTH_SHORT).show();
-          if (Integer.parseInt(quantity) > Integer.parseInt(selectedProduct.quantity))
+         else if (Integer.parseInt(quantity) > Integer.parseInt(selectedProduct.quantity))
               Toast.makeText(MainActivity.this, "Not enough quantity of " + selectedProduct.productName + " in stock!", Toast.LENGTH_SHORT).show();
           else {
               serviceClass.purchased(selectedProduct,quantity,total);
@@ -71,12 +76,16 @@ public class MainActivity extends AppCompatActivity {
 
               // Set title, message, and button
               builder.setTitle("Thankyou For Your Purchase!");
-              builder.setMessage("Your Purchase is "+ quantity+" "+ selectedProduct.productName +"for "+total);
+              builder.setMessage("Your Purchase is "+ quantity+" "+ selectedProduct.productName +" for "+total);
               builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                  @SuppressLint("SetTextI18n")
                   @Override
                   public void onClick(DialogInterface dialog, int which) {
                       // Action when OK button is clicked
                       dialog.dismiss(); // Close the dialog
+                      reset();
+                      productTypeTextView.setText("Product Type");
+                      selectedProduct = null;
                       adapter.notifyDataSetChanged();
                   }
               });
@@ -105,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
     private void reset() {
         quantity = "";
         total = 0.0;
-        quantityTextview.setText("");
-        totalTextView.setText("");
+        quantityTextview.setText("Quantity");
+        totalTextView.setText("Total");
     }
 }

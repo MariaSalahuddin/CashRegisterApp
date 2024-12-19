@@ -8,17 +8,15 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
 
 
-public class MyAdapter extends BaseAdapter {
+public class ProductListAdapter extends BaseAdapter {
 
     ArrayList<ProductModel> list;
     Context context;
-
-    MyAdapter(ArrayList<ProductModel> l, Context c) {
+    private int selectedPosition = -1;
+    ProductListAdapter(ArrayList<ProductModel> l, Context c) {
         list = l;
         context = c;
 
@@ -66,6 +64,13 @@ public class MyAdapter extends BaseAdapter {
         viewHolder.name.setText(product.productName);
         viewHolder.quantity.setText(product.quantity);
         viewHolder.amount.setText(String.valueOf(product.amount));
+        // Highlight the selected item
+        if (position == selectedPosition) {
+            convertView.setBackgroundColor(context.getResources().getColor(R.color.aqua)); // Change to any color
+        } else {
+            convertView.setBackgroundColor(context.getResources().getColor(R.color.white)); // Default background color
+        }
+
 
         return convertView;
     }
@@ -74,6 +79,10 @@ public class MyAdapter extends BaseAdapter {
         TextView name;
         TextView amount;
         TextView quantity;
+    }
+    public void setSelectedPosition(int position) {
+        selectedPosition = position;
+        notifyDataSetChanged(); // Refresh the view
     }
 
 }
