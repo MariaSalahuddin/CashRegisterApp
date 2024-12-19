@@ -13,7 +13,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Restock.RestockAnItemListener {
     ProductListAdapter adapter;
     ListView productList;
     Button buyButton;
@@ -84,8 +84,6 @@ public class MainActivity extends AppCompatActivity {
                       // Action when OK button is clicked
                       dialog.dismiss(); // Close the dialog
                       reset();
-                      productTypeTextView.setText("Product Type");
-                      selectedProduct = null;
                       adapter.notifyDataSetChanged();
                   }
               });
@@ -97,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
 
     @SuppressLint("SetTextI18n")
     private void numberClicked(View view) {
@@ -111,10 +110,16 @@ public class MainActivity extends AppCompatActivity {
         totalTextView.setText(total.toString());
     }
 
+    @SuppressLint("SetTextI18n")
     private void reset() {
         quantity = "";
         total = 0.0;
         quantityTextview.setText("Quantity");
         totalTextView.setText("Total");
+    }
+
+    @Override
+    public void itemRestocked() {
+        adapter.notifyDataSetChanged();
     }
 }

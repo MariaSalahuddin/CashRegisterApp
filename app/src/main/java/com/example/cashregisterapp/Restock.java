@@ -23,8 +23,10 @@ public class Restock extends AppCompatActivity {
     Integer selectedProduct;
     Button okButton;
     Button cancelButton;
-
-
+    interface RestockAnItemListener {
+        void itemRestocked();
+    }
+    RestockAnItemListener restockAnItemListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,20 +45,24 @@ public class Restock extends AppCompatActivity {
         okButton.setOnClickListener(v -> {
             try {
                 int restockQuantity = Integer.parseInt(restockText.getText().toString());
-                if (selectedProduct == null)
+                if (selectedProduct == null) {
                     Toast.makeText(Restock.this, "Please select Product to restock!", Toast.LENGTH_SHORT).show();
-                else {
+                } else {
                     serviceClass.restock(selectedProduct, restockQuantity);
                     adapter.notifyDataSetChanged();
                     reset();
+
+                    // Only call itemRestocked() if listener is set
+                    if (restockAnItemListener != null) {
+                        restockAnItemListener.itemRestocked();
+                    }
+
                     Toast.makeText(this, "Congratulations! Restock completed", Toast.LENGTH_SHORT).show();
                 }
 
             } catch (NumberFormatException e) {
-                // Not a valid integer
                 Toast.makeText(this, "Please enter a valid integer.", Toast.LENGTH_SHORT).show();
             }
-
         });
         cancelButton.setOnClickListener(v -> {
             finish();
@@ -67,5 +73,4 @@ public class Restock extends AppCompatActivity {
         restockText.setText("");
 
     }
-
 }
