@@ -16,6 +16,9 @@ public class ServiceClass {
         int finalQuantity = Integer.parseInt(productList.get(index).quantity) + purchaseQuantity;
         productList.get(index).quantity = Integer.toString(finalQuantity);
     }
+    void addNewProduct(String name, String quantity, Double price){
+      productList.add(new ProductModel(name,quantity,price));
+    }
     void updateQuantity(int index, String purchaseQuantity){
             int finalQuantity = Integer.parseInt(productList.get(index).quantity) - Integer.parseInt(purchaseQuantity);
             productList.get(index).quantity = Integer.toString(finalQuantity);
@@ -23,6 +26,5 @@ public class ServiceClass {
     }
     PurchaseModel getPurchaseDetail(int index){
         return purchasedList.get(index);
-
     }
 }

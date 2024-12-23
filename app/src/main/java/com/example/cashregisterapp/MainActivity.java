@@ -13,7 +13,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity implements Restock.RestockAnItemListener {
+public class MainActivity extends AppCompatActivity implements Restock.RestockAnItemListener, AddProduct.NewProductListener {
     ProductListAdapter adapter;
     ListView productList;
     Button buyButton;
@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements Restock.RestockAn
         });
         adapter = new ProductListAdapter(serviceClass.productList, this);
         productList.setAdapter(adapter);
+
         int[] numberIds = {R.id.button0, R.id.button1, R.id.button2, R.id.button3,
                 R.id.button4, R.id.button5, R.id.button6, R.id.button7,
                 R.id.button8, R.id.button9};
@@ -120,6 +121,11 @@ public class MainActivity extends AppCompatActivity implements Restock.RestockAn
 
     @Override
     public void itemRestocked() {
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void productAdded() {
         adapter.notifyDataSetChanged();
     }
 }

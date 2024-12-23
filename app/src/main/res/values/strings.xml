@@ -23,4 +23,8 @@
     <string name="enter_quantity">Enter Quantity</string>
     <string name="ok">OK</string>
     <string name="cancel">CANCEL</string>
+    <string name="add_new_product">Add New Product</string>
+    <string name="new_product">New Product</string>
+    <string name="price">Price</string>
+    <string name="add">Add</string>
 </resources>
